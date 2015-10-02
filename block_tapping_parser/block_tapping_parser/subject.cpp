@@ -57,6 +57,8 @@ int Subject::Score()
     //should occur on first occurance of a new session number
     catch (const std::out_of_range& oor)
     {
+      cout << "handling new session number from error:" << oor.what();
+
       sessiongroups.reserve(totalsessions); //allocate un-init'd space to place
       (sessiongroups.at(read_session_num-1)).push_back(*it); //place new row data
     }
