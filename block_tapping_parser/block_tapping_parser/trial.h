@@ -6,6 +6,16 @@ public:
 	Trial(std::string, std::string);
 	~Trial();
 	int Score();
+
+  //overloaded < operator to allow sorting by
+  //spansize_
+  bool operator < (const Trial& trial) const
+  {
+    return (span_size_ < trial.span_size_);
+  }
+  int GetSpanSize();
+  int GetPartialScore();
+  int GetAbsoluteScore();
 private:
 	int trial_number_;
 	int partial_score_;
