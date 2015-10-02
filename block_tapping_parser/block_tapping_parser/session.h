@@ -9,7 +9,7 @@ class Session
 public:
 	Session(std::string, std::vector<std::string>);
 	~Session();
-  int Score(std::string, std::vector<std::string>);
+  int Score();
 private:
 	std::vector<Trial> trials_;
 	int partial_score_;

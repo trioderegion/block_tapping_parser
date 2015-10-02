@@ -18,7 +18,7 @@ Session::~Session()
 
 //Will loop over all provided trials in the vector,
 //score them, the score the session
-int Session::Score(string header, vector<string> trials)
+int Session::Score()
 {
   return 0;
 }
