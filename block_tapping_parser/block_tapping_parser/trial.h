@@ -3,9 +3,9 @@
 class Trial
 {
 public:
-	Trial();
+	Trial(std::string, std::string);
 	~Trial();
-	int Score(std::string , std::string);
+	int Score();
 private:
 	int trial_number_;
 	int partial_score_;
@@ -13,6 +13,8 @@ private:
 	int span_size_;
 	char * ans_;
 	char * response_;
+  std::string header_;
+  std::string trialdata_;
 };
 
 
