@@ -26,6 +26,21 @@ Trial::~Trial()
 {
 }
 
+int Trial::GetSpanSize()
+{
+  return span_size_;
+}
+
+int Trial::GetPartialScore()
+{
+  return partial_score_;
+}
+
+int Trial::GetAbsoluteScore()
+{
+  return absolute_score_;
+}
+
 //Given two comma separated strings, will parse and score an individual trial
 //comma-seperated columns must match between trialData and header (come from same file)
 int Trial::Score()
