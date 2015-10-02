@@ -196,6 +196,7 @@
   <ItemGroup>
     <ClCompile Include="experiment.cpp" />
     <ClCompile Include="session.cpp" />
+    <ClCompile Include="common.cpp" />
     <ClCompile Include="source\better_system_defaults\modern_style_initialization.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="subject.cpp" />
@@ -212,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="experiment.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="session.h" />
     <ClInclude Include="source\better_system_defaults\no_sillywarnings_please.hpp" />
     <ClInclude Include="source\better_system_defaults\windows_h.config.hpp" />
