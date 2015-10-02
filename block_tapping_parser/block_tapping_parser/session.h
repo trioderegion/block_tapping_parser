@@ -2,14 +2,8 @@
 #include <string>
 #include <vector>
 #include "trial.h"
+#include "common.h"
 
-struct Result
-{
-  int value;
-  std::string name; //ex. BT_part4_1
-  bool type; //false = partial, true = absolute
-  Result(int v, std::string n, bool t) : value(v), name(n), type(t) {}
-};
 
 class Session
 {
@@ -17,6 +11,9 @@ public:
 	Session(std::string, std::vector<std::string>);
 	~Session();
   int Score();
+  int GetPartialScore();
+  int GetAbsoluteScore();
+  int GetSessionNumber();
 private:
 	std::vector<Trial> trials_;
   std::vector<std::string> sessiondata_;

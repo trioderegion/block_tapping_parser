@@ -25,6 +25,10 @@ Session::~Session()
 {
 }
 
+int Session::GetPartialScore() { return this->partial_score_; }
+int Session::GetAbsoluteScore() { return this->absolute_score_; }
+int Session::GetSessionNumber() { return this->session_number_; }
+
 //Will loop over all provided trials in the vector,
 //score them, the score the session
 int Session::Score()
