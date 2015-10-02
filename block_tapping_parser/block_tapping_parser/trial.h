@@ -1,10 +1,11 @@
 #pragma once
+#include <string>
 class Trial
 {
 public:
 	Trial();
 	~Trial();
-	int Score(char * , char *);
+	int Score(std::string , std::string);
 private:
 	int trial_number_;
 	int partial_score_;
