@@ -19,7 +19,7 @@ struct Result
 
 
 //const string experimentname ("ExperimentName");
-//const string subjectnumber ("Subject");
+//
 extern const std::string experimentname; 
 extern const std::string subjectnumber;
 extern const std::string sessionnumber;

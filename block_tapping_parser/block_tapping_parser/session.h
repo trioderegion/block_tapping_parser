@@ -14,6 +14,10 @@ public:
   int GetPartialScore();
   int GetAbsoluteScore();
   int GetSessionNumber();
+  bool operator < (const Session& sess) const
+  {
+    return (session_number_ < sess.session_number_);
+  }
 private:
 	std::vector<Trial> trials_;
   std::vector<std::string> sessiondata_;
