@@ -14,6 +14,7 @@ struct Result
   std::string name; //ex. BT_part4_1
   bool type; //false = partial, true = absolute
   Result(int v, std::string n, bool t) : value(v), name(n), type(t) {}
+  Result() : value(0),name(NULL),type(false) {};
 };
 /* Defines data file header names for parsing */
 

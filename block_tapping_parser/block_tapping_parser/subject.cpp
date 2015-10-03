@@ -25,11 +25,11 @@ Subject::~Subject()
 }
 
 //will loop over all provided trials
-int Subject::Score()
+//returns a one-hot encoded unsigned int that indicates
+//the sessions that this subject completed
+unsigned int Subject::Score()
 {
   //need to split all subject's data into groups of sessions, create a session object, then score it
-  int runningpart = 0;
-  int runningabs = 0;
   vector<vector<string>> sessiongroups;
   int totalsessions = 0;
   ostringstream resultname;
@@ -76,4 +76,6 @@ int Subject::Score()
   //sort and arrange by acending session number
   sort(this->sessions_.begin(),this->sessions_.end());
 
+
+  return 0;
 }

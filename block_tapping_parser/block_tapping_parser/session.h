@@ -11,8 +11,6 @@ public:
 	Session(std::string, std::vector<std::string>);
 	~Session();
   int Score();
-  int GetPartialScore();
-  int GetAbsoluteScore();
   int GetSessionNumber();
   bool operator < (const Session& sess) const
   {
@@ -21,9 +19,14 @@ public:
 private:
 	std::vector<Trial> trials_;
   std::vector<std::string> sessiondata_;
-	int partial_score_;
-	int absolute_score_;
   int session_number_;
   std::string header_;
+
+  //part and abs scores for this SESSION (ex. BT_part_1)
+	Result partial_score_;
+	Result absolute_score_;
+
+  //result container for all TRIAL results (organized into spans)
+  //ex. BT_part4_1
   std::vector<Result> results_;
 };

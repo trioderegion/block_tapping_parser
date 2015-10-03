@@ -12,10 +12,12 @@ const string sessionnumber ("Session");
 
 Session::Session(string header, vector<string> sessiondata)
 {
-  absolute_score_ = 0;
-  partial_score_ = 0;
   header_ = header; 
-  
+
+  //pre-fill type flags for known session results
+  partial_score_.type=false;
+  absolute_score_.type=true;
+
   //copy input vector into empty private data member
   std::copy(sessiondata.begin(), sessiondata.end(), std::back_inserter(sessiondata_));
 }
@@ -25,8 +27,6 @@ Session::~Session()
 {
 }
 
-int Session::GetPartialScore() { return this->partial_score_; }
-int Session::GetAbsoluteScore() { return this->absolute_score_; }
 int Session::GetSessionNumber() { return this->session_number_; }
 
 //Will loop over all provided trials in the vector,
@@ -79,15 +79,25 @@ int Session::Score()
     i++;
     
   }
-  //reset score for this session just in case
-  this->absolute_score_ = 0;
-  this->partial_score_ = 0;
+
+  runningpart = 0, runningabs = 0; //reset for re-use
+
   //have now constructed score containers for all spans
   for (vector<Result>::iterator it = this->results_.begin(); it != this->results_.end(); ++it)
   {
     //TRUE = absolute score, FALSE = partial
-    if (it->type) this->absolute_score_+=it->value;
-    else this->partial_score_+=it->value;
+    if (it->type) runningabs+=it->value;
+    else runningpart+=it->value;
   }
+
+  //populate session absolute and partial score containers
+  resultname << "abs_" << this->session_number_;
+  absolute_score_.name = resultname.str();
+  absolute_score_.value = runningabs;
+
+  resultname << "part_" << this->session_number_;
+  partial_score_.name = resultname.str();
+  partial_score_.value = runningpart;
+
   return 0;
 }
