@@ -1,7 +1,9 @@
 #include "experiment.h"
 #include "subject.h"
+#include <windows.h>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 using namespace std;
 
 Experiment::Experiment(string inputpath, string outputpath) : inputpath_(inputpath), outputpath_(outputpath)
@@ -11,29 +13,36 @@ Experiment::Experiment(string inputpath, string outputpath) : inputpath_(inputpa
 
 Experiment::~Experiment()
 {
-  outputfile_.close();
 }
 
 //opens files and parses rows into individual strings
 //for scoring
-void Experiment::Open()
+int Experiment::Open()
 {
-  string data, header;
-  this->inputfile_.open(this->inputpath_);
-  
-  //read header (must be first line)
-  getline(this->inputfile_, header);
-
-  this->data_.clear();
-
-  //read each row after header and add to data_ vector
-  while (getline(this->inputfile_, data))
+  string data;
+  ifstream inputfile (this->inputpath_);
+  inputfile.open(this->inputpath_);
+  if (inputfile.is_open())
   {
-    this->data_.push_back(data);
-  }
 
-  this->inputfile_.close();
-  return;
+
+    //read header (must be first line)
+    getline(inputfile, this->header_);
+
+    cout << "found header: " << this->header_;
+    this->data_.clear();
+
+    //read each row after header and add to data_ vector
+    while (getline(inputfile, data))
+    {
+      this->data_.push_back(data);
+    }
+
+    inputfile.close();
+
+    return 0;
+  }
+  else return -1;
 }
 
 int Experiment::Score()
@@ -192,7 +201,7 @@ vector<vector<string>> Experiment::GenerateOutputData(vector<string> header)
 }
 
 //Args: vector string of elements, character delimiter, character end of line
-void Experiment::WriteOutputLine(vector<string> elements, char delim, char eol)
+int Experiment::WriteOutputLine(vector<string> elements, char delim, char eol)
 {
   //write "<element><delim>..n..<eol>" 
   for (vector<string>::iterator it = elements.begin(); it != elements.end(); ++it)
@@ -201,14 +210,15 @@ void Experiment::WriteOutputLine(vector<string> elements, char delim, char eol)
     this->outputfile_ << *it << delim;
   }
   this->outputfile_ << eol;
+  return 0;
 }
 
-void Experiment::WriteOutputLine(vector<vector<string>> elements, char delim, char eol)
+int Experiment::WriteOutputLine(vector<vector<string>> elements, char delim, char eol)
 {
    
   for (vector<vector<string>>::iterator it = elements.begin(); it != elements.end(); ++it)
   {
     WriteOutputLine(*it,delim,eol);
   }
-
+  return 0;
 }

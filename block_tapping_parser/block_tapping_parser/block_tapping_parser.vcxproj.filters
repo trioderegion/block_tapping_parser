@@ -27,9 +27,6 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\better_system_defaults\modern_style_initialization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="experiment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,9 +44,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\better_system_defaults\windows_h.config.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\better_system_defaults\no_sillywarnings_please.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -68,9 +62,13 @@
     <ClInclude Include="common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\better_system_defaults\windows_h.config.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

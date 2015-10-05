@@ -10,13 +10,15 @@ class Experiment
 {
 public:
 	Experiment(std::string , std::string);
+  Experiment (Experiment &&) {};
+  Experiment(const Experiment &) = default;
+  Experiment& operator=(const Experiment&) = default;
 	~Experiment();
-  void Open();
+  int Open();
   int Write();
   int Score();
 private:
 	std::vector<Subject> subjects_;
-  std::ifstream inputfile_;
   std::ofstream outputfile_;
   std::string inputpath_;
   std::string outputpath_;
@@ -25,6 +27,6 @@ private:
 
   std::vector<std::string> GenerateOutputHeader();
   std::vector<std::vector<std::string>> GenerateOutputData(std::vector<std::string>);
-  void WriteOutputLine(std::vector<std::string>, char, char);
-  void WriteOutputLine(std::vector<std::vector<std::string>>, char, char);
+  int WriteOutputLine(std::vector<std::string>, char, char);
+  int WriteOutputLine(std::vector<std::vector<std::string>>, char, char);
 };
