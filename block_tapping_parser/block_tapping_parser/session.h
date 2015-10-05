@@ -16,6 +16,7 @@ public:
   {
     return (session_number_ < sess.session_number_);
   }
+  std::vector<Result> GetTrialResults();
 private:
 	std::vector<Trial> trials_;
   std::vector<std::string> sessiondata_;

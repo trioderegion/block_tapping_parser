@@ -16,6 +16,7 @@ Subject::Subject(string header, vector<string> subjectdata)
   this->subject_number_ = -1;
   //copy data to member variable
   std::copy(subjectdata.begin(),subjectdata.end(),std::back_inserter(this->subjectdata_));
+  sessions_present_=0;
 
 }
 
@@ -24,15 +25,16 @@ Subject::~Subject()
 {
 }
 
+int Subject::GetSubjectNumber() {return this->subject_number_;}
+
 //will loop over all provided trials
 //returns a one-hot encoded unsigned int that indicates
 //the sessions that this subject completed
-unsigned int Subject::Score()
+void Subject::Score()
 {
   //need to split all subject's data into groups of sessions, create a session object, then score it
   vector<vector<string>> sessiongroups;
   int totalsessions = 0;
-  ostringstream resultname;
 
   //store subject number (all provided session data should correspond to the same subject)
   this->subject_number_ = ReadCellAsNum(this->header_,this->subjectdata_.at(0),subjectnumber);
@@ -68,14 +70,35 @@ unsigned int Subject::Score()
   //that correspond to a single subject
   for (vector<vector<string>>::iterator it = sessiongroups.begin(); it != sessiongroups.end(); ++it)
   {
+    //create and score session
     Session newsession = Session::Session(this->header_,*it);
     newsession.Score();
+
+    //mark session number as present
+    this->sessions_present_ |= (1<<newsession.GetSessionNumber());
+
+    //add this session to list of sessions for this subject
     this->sessions_.push_back(newsession);
   }
   
   //sort and arrange by acending session number
   sort(this->sessions_.begin(),this->sessions_.end());
 
+  return;
+}
 
-  return 0;
+std::vector<Result> Subject::GetAllResults()
+{
+  vector<Result> current_results;
+  //insert session results first (easy) 
+  current_results.insert(current_results.end(), this->results_.begin(), this->results_.end());
+
+  //loop over all sessions and collect span results
+  for (vector<Session>::iterator it = this->sessions_.begin(); it != this->sessions_.end(); ++it)
+  {
+    vector<Result> trial_results = it->GetTrialResults();
+    current_results.insert(current_results.end(), trial_results.begin(), trial_results.end());
+  }
+
+  return current_results;
 }

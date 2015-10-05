@@ -28,6 +28,7 @@ Session::~Session()
 }
 
 int Session::GetSessionNumber() { return this->session_number_; }
+vector<Result> Session::GetTrialResults() {return this->results_;}
 
 //Will loop over all provided trials in the vector,
 //score them, the score the session
@@ -67,10 +68,12 @@ int Session::Score()
       resultname << "part" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
       cout << "constructing results for:" << resultname.str();
       this->results_.push_back(Result(runningpart,resultname.str(),false));
+      resultname.clear();
 
       resultname << "abs" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
       cout << "constructing results for:" << resultname.str();
       this->results_.push_back(Result(runningabs,resultname.str(),true));
+      resultname.clear();
 
       //reset counters
       runningpart = 0, runningabs = 0;
@@ -95,9 +98,11 @@ int Session::Score()
   absolute_score_.name = resultname.str();
   absolute_score_.value = runningabs;
 
+  resultname.clear();
   resultname << "part_" << this->session_number_;
   partial_score_.name = resultname.str();
   partial_score_.value = runningpart;
-
+  
+  resultname.clear();
   return 0;
 }
