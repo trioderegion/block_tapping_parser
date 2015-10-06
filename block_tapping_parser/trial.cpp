@@ -1,6 +1,8 @@
+#include "stdafx.h"
 #include "trial.h"
 #include "common.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -57,16 +59,31 @@ int Trial::Score()
   int found = 0;
 
   //directly populate simple fields
-  this->trial_number_ = ReadCellAsNum(this->header_, this->trialdata_, trialnumber);
-  this->span_size_ = ReadCellAsNum(this->header_, this->trialdata_, spansize);
+  try
+  {
+    this->trial_number_ = ReadCellAsNum(this->header_, this->trialdata_, trialnumber);
+  }
+  catch (...)
+  {
+    this->trial_number_ = -1;
+  }
+  try
+  {
+    this->span_size_ = ReadCellAsNum(this->header_, this->trialdata_, spansize);
+  }
+  catch (...)
+  {
+    this->span_size_ = 0;
+  }
 
+  cout << "\nScoring trial " << this->trial_number_ << " (span: " << this->span_size_ << ")";
   while (!done)
   {
     answer_lookup = answerprefix + to_string(i+1); //generate header name to read, which is always +1
     answer_string = ReadCellAsString(this->header_, this->trialdata_,answer_lookup);
-
+    if (answer_string == NOT_FOUND) done = true; //end if we cant find the Response column (should mean we are done)
     //If there is a response found, compare to expected key text
-    if (!answer_string.empty())
+    else if (!answer_string.empty())
     {
       found++; //mark a found answer
       key_lookup = keyprefix + to_string(i); //generate header name that contains the key
@@ -84,8 +101,6 @@ int Trial::Score()
         this->partial_score_ = -2;
         done = true; 
       }
-      else if (found == 0) i++;  //if we havent found one yet, keep going
-
       //if we havent found all of the items (valid answer blocks are contiguous
       //and should always be found in a group), then mark this trial with error flags
       else if (found < this->span_size_ && found>0)
@@ -95,12 +110,9 @@ int Trial::Score()
         this->partial_score_ = -1;
         done=true;
       }
-      //havent found first item
-      else 
-      {
-        i++; 
-      }
     }
+    //havent found first item
+    i++;
   }
   
   //calculate absolute score (= to partial if all answers were corret)

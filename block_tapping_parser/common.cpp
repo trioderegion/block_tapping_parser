@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "common.h"
 #include <string>
 #include <sstream>
@@ -31,15 +32,15 @@ int FindColumn(string cslist, string query)
   split(cslist,',',columns);
 
   //iterate through columns names looking for the input query and return column number (start 0)
-  for (unsigned int i = 0; i < columns.size(); i++)
+  for (vector<string>::iterator it = columns.begin();it!=columns.end();++it)
   {
-    if (columns[i] == query)
+    if (it->find(query) != std::string::npos)
     {
-      location=i;
+      location = it-columns.begin();
       break;
     }
   }
-    return location;
+  return location;
 }
 
 //given a comma-seperated list of header and data strings and a given column name in the header
@@ -51,7 +52,11 @@ string ReadCellAsString(string csheader, string csdata, string dataname)
 
   column = FindColumn(csheader,dataname);
   split(csdata,',',data_elements);
-  return data_elements[column];
+  if (column == -1)
+  {
+    return NOT_FOUND;
+  }
+  else return data_elements[column];
 
 }
 
@@ -62,5 +67,6 @@ int ReadCellAsNum(string csheader, string csdata, string dataname)
   string readstring ("");
 
   readstring = ReadCellAsString(csheader,csdata,dataname);
+  
   return stoi(readstring);
 }

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "subject.h"
 #include "session.h"
 
@@ -45,42 +46,49 @@ void Subject::Score()
     int read_session_num; 
     //for each data row (subjectdata), identify session number,
     //and assign to the appropriate position in the sessiongroups vector
-    read_session_num = ReadCellAsNum(this->header_,*it,subjectnumber);
+    read_session_num = ReadCellAsNum(this->header_,*it,sessionnumber);
+    cout << "\nReading session number " << read_session_num;
 
     //what is the current largest number of sessions?
     if (totalsessions < read_session_num) totalsessions = read_session_num;
     try
     {
       //try to insert this individual row into the correct place in the group of sessions
+      cout << "storing into existing session";
       (sessiongroups.at(read_session_num-1)).push_back(*it);
+      
     }
     //catch an out of range exception
     //means that our sessiongroup vector hasn't seen this session number yet
     //should occur on first occurance of a new session number
-    catch (const std::out_of_range& oor)
+    //catch (const std::out_of_range& oor)
+    catch(...)
     {
-      cout << "handling new session number from error:" << oor.what();
+      cout << "\nhandling new session number: " << read_session_num;
 
-      sessiongroups.reserve(totalsessions); //allocate un-init'd space to place
+      sessiongroups.resize(totalsessions); //allocate un-init'd space to place
       (sessiongroups.at(read_session_num-1)).push_back(*it); //place new row data
     }
   }
 
+  cout << "\nAll sessions read for subject " << this->GetSubjectNumber();
   //create Session objects, score them, and add them to group of sessions
   //that correspond to a single subject
   for (vector<vector<string>>::iterator it = sessiongroups.begin(); it != sessiongroups.end(); ++it)
   {
     //create and score session
-    Session newsession = Session::Session(this->header_,*it);
-    newsession.Score();
+    Session* newsession = new Session(this->header_,*it);
+    cout << "\nCreating and scoring session " << newsession->GetSessionNumber();
+    newsession->Score();
 
     //mark session number as present
-    this->sessions_present_ |= (1<<newsession.GetSessionNumber());
+    this->sessions_present_ |= (1<<newsession->GetSessionNumber());
 
     //add this session to list of sessions for this subject
-    this->sessions_.push_back(newsession);
+    this->sessions_.push_back(*newsession);
   }
   
+  cout << "\nsorting sessions";
   //sort and arrange by acending session number
   sort(this->sessions_.begin(),this->sessions_.end());
 

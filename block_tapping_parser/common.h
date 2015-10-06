@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+#define NOT_FOUND "notfound"
 std::vector<std::string> &split(const std::string &, char , std::vector<std::string> &);
 std::vector<std::string> split(const std::string, char);
 int FindColumn(std::string, std::string);
@@ -14,7 +15,7 @@ struct Result
   std::string name; //ex. BT_part4_1
   bool type; //false = partial, true = absolute
   Result(int v, std::string n, bool t) : value(v), name(n), type(t) {}
-  Result() : value(0),name(NULL),type(false) {};
+  Result() : value(0),name(""),type(false) {};
 };
 /* Defines data file header names for parsing */
 

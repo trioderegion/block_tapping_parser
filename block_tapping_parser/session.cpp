@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "session.h"
 #include "trial.h"
 #include "common.h"
@@ -66,12 +67,12 @@ int Session::Score()
     {
       //construct span result name string of format <type><spansize>_<session#>
       resultname << "part" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
-      cout << "constructing results for:" << resultname.str();
+      cout << "\nconstructing results for:" << resultname.str();
       this->results_.push_back(Result(runningpart,resultname.str(),false));
       resultname.clear();
 
       resultname << "abs" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
-      cout << "constructing results for:" << resultname.str();
+      cout << "\nconstructing results for:" << resultname.str();
       this->results_.push_back(Result(runningabs,resultname.str(),true));
       resultname.clear();
 

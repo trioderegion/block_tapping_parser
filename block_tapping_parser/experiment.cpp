@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "experiment.h"
 #include "subject.h"
 #include <windows.h>
@@ -20,16 +21,17 @@ Experiment::~Experiment()
 int Experiment::Open()
 {
   string data;
-  ifstream inputfile (this->inputpath_);
+  ifstream inputfile;
   inputfile.open(this->inputpath_);
-  if (inputfile.is_open())
+  if (inputfile.good())
   {
 
 
     //read header (must be first line)
     getline(inputfile, this->header_);
-
+    
     cout << "found header: " << this->header_;
+
     this->data_.clear();
 
     //read each row after header and add to data_ vector
@@ -74,7 +76,7 @@ int Experiment::Score()
     {
       subjectpos.push_back(subjectnum); //add subject number to subject number list
       size = subjectpos.size();
-      subjectgroups.reserve(size); //increase size of groups to match unique subject numbers
+      subjectgroups.resize(size); //increase size of groups to match unique subject numbers
       subjectgroups.at(size-1).push_back(*it); //add new data string to the new subject entry
     }
     else //we found the location of data for this subject, simply add more data
