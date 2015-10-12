@@ -33,6 +33,8 @@ int Subject::GetSubjectNumber() {return this->subject_number_;}
 //the sessions that this subject completed
 void Subject::Score()
 {
+  ostringstream resultname;
+
   //need to split all subject's data into groups of sessions, create a session object, then score it
   vector<vector<string>> sessiongroups;
   int totalsessions = 0;
@@ -54,7 +56,7 @@ void Subject::Score()
     try
     {
       //try to insert this individual row into the correct place in the group of sessions
-      cout << "storing into existing session";
+      cout << "\nstoring into existing session";
       (sessiongroups.at(read_session_num-1)).push_back(*it);
       
     }
@@ -76,30 +78,65 @@ void Subject::Score()
   //that correspond to a single subject
   for (vector<vector<string>>::iterator it = sessiongroups.begin(); it != sessiongroups.end(); ++it)
   {
-    //create and score session
-    Session* newsession = new Session(this->header_,*it);
-    cout << "\nCreating and scoring session " << newsession->GetSessionNumber();
-    newsession->Score();
+    if (it->size()!=0)
+    {
 
-    //mark session number as present
-    this->sessions_present_ |= (1<<newsession->GetSessionNumber());
+      //create and score session
+      Session* newsession = new Session(this->header_, *it);
+      newsession->Score();
+        cout << "\nCreating and scoring session " << newsession->GetSessionNumber();
+        //mark session number as present
+        this->sessions_present_ |= (1 << newsession->GetSessionNumber());
 
+        this->sessions_.push_back(*newsession);
+    }
+    else
+    {
+      cout << "\nIgnoring empty Session";
+      //this->sessions_.push_back(*(new Session()));
+    }
     //add this session to list of sessions for this subject
-    this->sessions_.push_back(*newsession);
   }
   
   cout << "\nsorting sessions";
   //sort and arrange by acending session number
   sort(this->sessions_.begin(),this->sessions_.end());
 
-  return;
+  //populate session scores
+  for (vector<Session>::iterator it = this->sessions_.begin(); it != this->sessions_.end(); ++it)
+  {
+    int runningabs=0;
+    int runningpart=0; 
+    //read trial results
+    vector<Result> trial_results = it->GetTrialResults();
+    for (vector<Result>::iterator jt = trial_results.begin(); jt != trial_results.end(); ++jt)
+    {
+      if (jt->type) //if absolute score
+      {
+        runningabs += jt->value;
+      }
+      else //if partial score
+      {
+        runningpart += jt->value;
+      }
+    }
+    resultname.str(std::string());
+    resultname << "BT_abs_" << it->GetSessionNumber();
+    cout << "\nconstructing results for:" << resultname.str();
+    this->results_.push_back(Result(runningabs, resultname.str(), true));
+    resultname.str(std::string());
+    resultname << "BT_part_" << it->GetSessionNumber();
+    cout << "\nconstructing results for:" << resultname.str();
+    this->results_.push_back(Result(runningpart, resultname.str(), false));
+  }
+  
+    return;
 }
 
 std::vector<Result> Subject::GetAllResults()
 {
-  vector<Result> current_results;
   //insert session results first (easy) 
-  current_results.insert(current_results.end(), this->results_.begin(), this->results_.end());
+  vector<Result> current_results = this->results_;
 
   //loop over all sessions and collect span results
   for (vector<Session>::iterator it = this->sessions_.begin(); it != this->sessions_.end(); ++it)

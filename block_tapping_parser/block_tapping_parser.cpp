@@ -24,7 +24,14 @@ auto main(int argc, char **argv) -> int
   cout << "echo:" << args[1] << " -- " << args[2];
 
   Experiment exp = Experiment::Experiment(args.at(1), args.at(2));
-  exp.Open();
-  exp.Score();
-  exp.Write();
+  try
+  {
+    exp.Open();
+    exp.Score();
+    exp.Write();
+  }
+  catch (...)
+  {
+    cout << "[FATAL] Something went terribly, terribly wrong.";
+  }
 }

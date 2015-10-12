@@ -43,6 +43,11 @@ int Trial::GetAbsoluteScore()
   return absolute_score_;
 }
 
+int Trial::GetTrialNumber()
+{
+  return this->trial_number_;
+}
+
 //Given two comma separated strings, will parse and score an individual trial
 //comma-seperated columns must match between trialData and header (come from same file)
 int Trial::Score()

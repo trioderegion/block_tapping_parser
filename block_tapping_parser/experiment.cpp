@@ -89,10 +89,10 @@ int Experiment::Score()
   //data in the input file.  Create and score subjects.
   for (vector<vector<string>>::iterator it = subjectgroups.begin(); it != subjectgroups.end(); ++it)
   {
-    Subject newsubject = Subject::Subject(this->header_,*it); //create new Subject with all of its raw data
-    newsubject.Score();
+    Subject* newsubject = new Subject(this->header_,*it); //create new Subject with all of its raw data
+    newsubject->Score();
 
-    this->subjects_.push_back(newsubject);
+    this->subjects_.push_back(*newsubject);
 
   }
   
@@ -161,18 +161,18 @@ vector<vector<string>> Experiment::GenerateOutputData(vector<string> header)
   vector<Result> results;
   ostringstream buffer;
  
-  //create NULL containers in which to insert variable values.
-  //any empty session variables will remain NULL.
-  singleline.resize(header.size(),NULL);
 
   for (vector<Subject>::iterator it = this->subjects_.begin(); it != this->subjects_.end(); ++it)
   {
     //Read subject number and record as first entry
-    buffer.clear();
+    buffer.str(std::string());
     buffer << it->GetSubjectNumber();
 
+    //create NULL containers in which to insert variable values.
+    //any empty session variables will remain NULL.
     singleline.clear();
-    singleline.push_back(buffer.str()); 
+    singleline.resize(header.size());
+    singleline.at(0) = buffer.str();
 
 
     //loop over all variables in the header (after first, which is subject number)
@@ -184,14 +184,14 @@ vector<vector<string>> Experiment::GenerateOutputData(vector<string> header)
       string columnname = *jt;
 
       //search result list for the result named the same as the current header column
-      found = std::find_if(results.begin(), results.end(), [columnname](Result const& r){
-      return r.name==columnname;
+      found = std::find_if(results.begin(), results.end(), [columnname](Result const& r) {
+        return r.name == columnname;
       });
       //if the find function found a result named the current column name (jt)
       //store the result value in the corresponding position in the current line (singleline)
       if ( found != results.end())
       {
-        buffer.clear();
+        buffer.str(std::string());
         buffer << found->value;
         singleline.at(jt-header.begin()) = buffer.str(); 
       }

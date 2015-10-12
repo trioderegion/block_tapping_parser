@@ -21,6 +21,15 @@ Session::Session(string header, vector<string> sessiondata)
 
   //copy input vector into empty private data member
   std::copy(sessiondata.begin(), sessiondata.end(), std::back_inserter(sessiondata_));
+  session_number_=-1;
+}
+
+Session::Session()
+{
+  this->header_=std::string();
+  this->sessiondata_.resize(1);
+  this->results_.resize(0);
+  session_number_=-1;
 }
 
 
@@ -47,9 +56,18 @@ int Session::Score()
   {
     //construct a new Trial object, score it, and insert it into the
     //list of trials in this session
-    Trial newtrial = Trial::Trial(header_,*it);
-    newtrial.Score();
-    trials_.push_back(newtrial);
+    Trial* newtrial = new Trial(header_,*it);
+    
+    newtrial->Score();
+    //trial number = -1 if this is a practice run
+    if (newtrial->GetTrialNumber() != -1)
+    {
+      trials_.push_back(*newtrial);
+    }
+    else
+    {
+      cout << " [practice]";
+    }
   }
   
   //sort trials by the overloaded '<' operator, which will sort by spansize
@@ -63,18 +81,20 @@ int Session::Score()
     runningabs += trials_.at(i).GetAbsoluteScore();
     
     //check if this is the last trial for a given span (pre-sorted, always linear)
-    if (this->trials_.at(i).GetSpanSize() != this->trials_.at(i + 1).GetSpanSize())
+    //short circuit a possible out of range check
+    if ((i != this->trials_.size()-1) && 
+        (this->trials_.at(i).GetSpanSize() != this->trials_.at(i + 1).GetSpanSize()))
     {
       //construct span result name string of format <type><spansize>_<session#>
-      resultname << "part" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
+      resultname.str(std::string());
+      resultname << "BT_part" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
       cout << "\nconstructing results for:" << resultname.str();
       this->results_.push_back(Result(runningpart,resultname.str(),false));
-      resultname.clear();
 
-      resultname << "abs" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
+      resultname.str(std::string());
+      resultname << "BT_abs" << this->trials_.at(i).GetSpanSize() << "_" << this->session_number_;
       cout << "\nconstructing results for:" << resultname.str();
       this->results_.push_back(Result(runningabs,resultname.str(),true));
-      resultname.clear();
 
       //reset counters
       runningpart = 0, runningabs = 0;
@@ -95,12 +115,13 @@ int Session::Score()
   }
 
   //populate session absolute and partial score containers
-  resultname << "abs_" << this->session_number_;
+  resultname.str(std::string());
+  resultname << "BT_abs_" << this->session_number_;
   absolute_score_.name = resultname.str();
   absolute_score_.value = runningabs;
 
-  resultname.clear();
-  resultname << "part_" << this->session_number_;
+  resultname.str(std::string());
+  resultname << "BT_part_" << this->session_number_;
   partial_score_.name = resultname.str();
   partial_score_.value = runningpart;
   

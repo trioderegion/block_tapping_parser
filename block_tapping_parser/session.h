@@ -9,6 +9,7 @@ class Session
 {
 public:
 	Session(std::string, std::vector<std::string>);
+  Session();
 	~Session();
   int Score();
   int GetSessionNumber();

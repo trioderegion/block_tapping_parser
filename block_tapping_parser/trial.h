@@ -16,6 +16,7 @@ public:
   int GetSpanSize();
   int GetPartialScore();
   int GetAbsoluteScore();
+  int GetTrialNumber();
 private:
 	int trial_number_;
 	int partial_score_;
