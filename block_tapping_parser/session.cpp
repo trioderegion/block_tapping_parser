@@ -82,8 +82,11 @@ int Session::Score()
     
     //check if this is the last trial for a given span (pre-sorted, always linear)
     //short circuit a possible out of range check
-    if ((i != this->trials_.size()-1) && 
-        (this->trials_.at(i).GetSpanSize() != this->trials_.at(i + 1).GetSpanSize()))
+    if (
+        ((i != this->trials_.size()-1) && 
+          (this->trials_.at(i).GetSpanSize() != this->trials_.at(i + 1).GetSpanSize())) ||
+        (i == this->trials_.size()-1)
+        )
     {
       //construct span result name string of format <type><spansize>_<session#>
       resultname.str(std::string());
