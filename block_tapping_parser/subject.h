@@ -15,7 +15,6 @@ public:
   {
     return (subject_number_ < sub.subject_number_);
   }
-  unsigned int GetSessionsPresent();
   std::vector<Result> GetAllResults();
   int GetSubjectNumber();
 private:

@@ -24,13 +24,15 @@ Subject::Subject(string header, vector<string> subjectdata)
 
 Subject::~Subject()
 {
+  //TODO should deallocate vectors
 }
 
-int Subject::GetSubjectNumber() {return this->subject_number_;}
+int Subject::GetSubjectNumber()
+{
+  return this->subject_number_;
+}
 
 //will loop over all provided trials
-//returns a one-hot encoded unsigned int that indicates
-//the sessions that this subject completed
 void Subject::Score()
 {
   ostringstream resultname;
@@ -46,6 +48,7 @@ void Subject::Score()
   for (vector<string>::iterator it = this->subjectdata_.begin(); it != this->subjectdata_.end(); ++it)
   {
     int read_session_num; 
+
     //for each data row (subjectdata), identify session number,
     //and assign to the appropriate position in the sessiongroups vector
     read_session_num = ReadCellAsNum(this->header_,*it,sessionnumber);
@@ -84,18 +87,18 @@ void Subject::Score()
       //create and score session
       Session* newsession = new Session(this->header_, *it);
       newsession->Score();
-        cout << "\nCreating and scoring session " << newsession->GetSessionNumber();
-        //mark session number as present
-        this->sessions_present_ |= (1 << newsession->GetSessionNumber());
+      cout << "\nCreating and scoring session " << newsession->GetSessionNumber();
 
-        this->sessions_.push_back(*newsession);
+      //mark session number as present
+      this->sessions_present_ |= (1 << newsession->GetSessionNumber());
+
+    //add this session to list of sessions for this subject
+      this->sessions_.push_back(*newsession);
     }
     else
     {
       cout << "\nIgnoring empty Session";
-      //this->sessions_.push_back(*(new Session()));
     }
-    //add this session to list of sessions for this subject
   }
   
   cout << "\nsorting sessions";
@@ -111,7 +114,7 @@ void Subject::Score()
     vector<Result> trial_results = it->GetTrialResults();
     for (vector<Result>::iterator jt = trial_results.begin(); jt != trial_results.end(); ++jt)
     {
-      if (jt->type) //if absolute score
+      if (jt->type) //if absolute score (TODO: clearer if I added a helper function and enums
       {
         runningabs += jt->value;
       }

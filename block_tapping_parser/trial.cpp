@@ -26,6 +26,7 @@ Trial::Trial(string header, string trialdata)
 
 Trial::~Trial()
 {
+  //no dynamic memory allocated
 }
 
 int Trial::GetSpanSize()
@@ -86,20 +87,22 @@ int Trial::Score()
   {
     answer_lookup = answerprefix + to_string(i+1); //generate header name to read, which is always +1
     answer_string = ReadCellAsString(this->header_, this->trialdata_,answer_lookup);
-    if (answer_string == NOT_FOUND) done = true; //end if we cant find the Response column (should mean we are done)
-    //If there is a response found, compare to expected key text
+    if (answer_string == NOT_FOUND) 
+    {
+      done = true; //end if we cant find the Response column (should mean we are done)
+    }
     else if (!answer_string.empty())
     {
+      //If there is a response found, compare to expected key text
       found++; //mark a found answer
       key_lookup = keyprefix + to_string(i); //generate header name that contains the key
       key_string = ReadCellAsString(this->header_, this->trialdata_, key_lookup); //Grab correct answer (key)
       if (key_string == answer_string) this->partial_score_++; //if correct, increment partial credit
 
     }
-    //either couldn't find the name or it had empty data
     else
     {
-
+      //either couldn't find the name or it had empty data
       if (i>500 || found>100) //protect ourselves against bad code
       {
         this->absolute_score_ = -2;

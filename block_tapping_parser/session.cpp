@@ -35,13 +35,21 @@ Session::Session()
 
 Session::~Session()
 {
+  //TODO: should de-allocate trials_ and sessiondata_
 }
 
-int Session::GetSessionNumber() { return this->session_number_; }
-vector<Result> Session::GetTrialResults() {return this->results_;}
+int Session::GetSessionNumber()
+{ 
+  return this->session_number_;
+}
+
+vector<Result> Session::GetTrialResults()
+{
+  return this->results_;
+}
 
 //Will loop over all provided trials in the vector,
-//score them, the score the session
+//score them, then score the session
 int Session::Score()
 {
   unsigned int i = 0;
@@ -112,7 +120,7 @@ int Session::Score()
   //have now constructed score containers for all spans
   for (vector<Result>::iterator it = this->results_.begin(); it != this->results_.end(); ++it)
   {
-    //TRUE = absolute score, FALSE = partial
+    //TRUE = absolute score, FALSE = partial (TODO: should be an enum)
     if (it->type) runningabs+=it->value;
     else runningpart+=it->value;
   }

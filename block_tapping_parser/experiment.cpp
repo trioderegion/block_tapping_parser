@@ -25,23 +25,17 @@ int Experiment::Open()
   inputfile.open(this->inputpath_);
   if (inputfile.good())
   {
-
-
     //read header (must be first line)
     getline(inputfile, this->header_);
-    
     cout << "found header: " << this->header_;
 
-    this->data_.clear();
-
     //read each row after header and add to data_ vector
+    this->data_.clear();
     while (getline(inputfile, data))
     {
       this->data_.push_back(data);
     }
-
     inputfile.close();
-
     return 0;
   }
   else return -1;
@@ -51,9 +45,13 @@ int Experiment::Score()
 {
   std::vector<std::vector<std::string>> subjectgroups;
   vector<int> subjectpos;
-  int subjectnum, loc, counter,size;
+  int subjectnum;
+  int loc;
+  int counter;
+  int size;
 
   //loop over all raw data rows and organize into groups of subjects
+  //TODO: This "determine if present" operation may be better handled with a map or set
   for (vector<string>::iterator it = this->data_.begin(); it != this->data_.end(); ++it)
   {
     subjectnum = ReadCellAsNum(this->header_,*it,subjectnumber); //read this subject's number
@@ -112,16 +110,19 @@ int Experiment::Write()
 
   if (this->outputfile_.is_open())
   {
-    output_header = GenerateOutputHeader();
 
     //write header (column names)
+    output_header = GenerateOutputHeader();
     WriteOutputLine(output_header,',','\n');
 
+    //write all data lines
     output_data = GenerateOutputData(output_header);
-
     WriteOutputLine(output_data,',','\n');
   }
-  else return -1; //return -1 for file open error
+  else
+  {
+    return -1; //return -1 for file open error
+  }
   
   outputfile_.close();
   return 0;
@@ -140,6 +141,7 @@ std::vector<std::string> Experiment::GenerateOutputHeader()
     results = it->GetAllResults();
 
     //loop over all of a subject's results and add any result names not already seen
+    //TODO: Implement outputheader as a 'set' container.  This is a basic set operation on "output header" -- pushing an existing entry does nothing
     for (vector<Result>::iterator jt = results.begin(); jt != results.end(); ++jt)
     {
       //has this variable name been recorded already?
@@ -164,14 +166,14 @@ vector<vector<string>> Experiment::GenerateOutputData(vector<string> header)
 
   for (vector<Subject>::iterator it = this->subjects_.begin(); it != this->subjects_.end(); ++it)
   {
-    //Read subject number and record as first entry
-    buffer.str(std::string());
-    buffer << it->GetSubjectNumber();
-
     //create NULL containers in which to insert variable values.
     //any empty session variables will remain NULL.
     singleline.clear();
     singleline.resize(header.size());
+
+    //Read subject number and record as first entry
+    buffer.str(std::string());
+    buffer << it->GetSubjectNumber();
     singleline.at(0) = buffer.str();
 
 
